@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Actusuario"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Email"
+        android:layout_marginTop="50dp"
+        android:gravity="center"
+        />
+
+    <EditText
+        android:id="@+id/etemailu"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center"
+        android:hint="Ingrese su Email">
+
+    </EditText>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Nombre"
+        android:gravity="center"
+        />
+
+    <EditText
+        android:id="@+id/etnombreu"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center"
+        android:hint="Ingrese su Nombre">
+
+    </EditText>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Contraseña"
+        android:gravity="center"
+        />
+
+    <EditText
+        android:id="@+id/etpasswordu"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center"
+        android:inputType="textPassword"
+        android:hint="Ingrese su contraseña">
+
+    </EditText>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Función o Rol"
+        android:gravity="center"
+        />
+
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:layout_marginTop="20dp">
+
+        <RadioButton
+            android:id="@+id/rbadminu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Administrador">
+
+        </RadioButton>
+
+        <RadioButton
+            android:id="@+id/rbusuu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Usuario">
+
+        </RadioButton>
+
+    </RadioGroup>
+
+    <Button
+        android:id="@+id/btnagregaru"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center"
+        android:text="Agregar">
+
+    </Button>
+
+    <Button
+        android:id="@+id/btnbuscaru"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center"
+        android:text="Buscar">
+
+    </Button>
+
+
+    <Button
+        android:id="@+id/btnactualizaru"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center"
+        android:text="Actaulizar">
+
+    </Button>
+
+    <Button
+        android:id="@+id/btneliminaru"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center"
+        android:text="Eliminar">
+
+    </Button>
+
+    <Button
+        android:id="@+id/btnlistaru"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center"
+        android:text="Listar">
+
+    </Button>
+
+
+
+</LinearLayout>
