@@ -37,10 +37,11 @@ public class ListadoUsuarios extends AppCompatActivity {
         SQLiteDatabase db = osql.getReadableDatabase();
         String query = "Select email, nombre, rol From Usuario";
         Cursor cusuario = db.rawQuery(query,null);
+
         if (cusuario.moveToFirst()){
             do {
                 String tipou = "Invitado";
-                if (cusuario.getString(0).equals("1")){
+                if (cusuario.getString(2).equals("1")){
                     tipou = "Administrador";
                 }
                 String linea = cusuario.getString(1) + " " + cusuario.getString(0) + " " + tipou;

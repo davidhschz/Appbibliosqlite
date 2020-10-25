@@ -1,12 +1,18 @@
 package com.example.appbibliosqlite;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -18,8 +24,10 @@ import java.util.ArrayList;
 public class Actusuario extends AppCompatActivity {
     EditText emailu, nombreu, passwordu;
     RadioButton adminu, usuu;
-    Button agregaru, buscaru, actualizaru,eliminaru, listaru;
-    Basedatos osqlite = new Basedatos(this,"BDBIBLIOTECA", null,1);
+    Button agregaru, buscaru, actualizaru, eliminaru, listaru;
+    String emailanterior, emailnuevo;
+    Basedatos osqlite = new Basedatos(this, "BDBIBLIOTECA", null, 1);
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,14 +44,45 @@ public class Actusuario extends AppCompatActivity {
         listaru = findViewById(R.id.btnlistaru);
 
 
+        eliminaru.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                eliminarusuario();
+                /*AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(Actusuario.this);
+                alertDialogBuilder.setMessage("Está seguro de eliminar el usuario: " + nombreu.getText().toString());
+                alertDialogBuilder.setPositiveButton("Sí",
+                        new DialogInterface.OnClickListener() {
+
+                            @Override
+                            public void onClick(DialogInterface arg0, int arg1) {
+                                SQLiteDatabase obde = osqlite.getWritableDatabase();
+                                obde.execSQL("DELETE FROM usuario WHERE email = '"+ emailu.getText().toString()+"'");
+                                Toast.makeText(getApplicationContext(),"Usuario Eliminado correctamente...",Toast.LENGTH_SHORT).show();
+                            }
+                        });
+
+                alertDialogBuilder.setNegativeButton("No",
+                        new DialogInterface.OnClickListener() {
+
+                            @Override
+                            public void onClick(DialogInterface arg0, int arg1) {
+
+                            }
+                        });
+
+                AlertDialog alertDialog = alertDialogBuilder.create();
+                alertDialog.show();*/
+            }
+        });
+
         actualizaru.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String mrol = "0";
-                if (adminu.isChecked()){
+                /*String mrol = "0";
+                if (adminu.isChecked()) {
                     mrol = "1";
-                }
-                actualizarusuario(emailu.getText().toString().trim(), nombreu.getText().toString().trim(),passwordu.getText().toString().trim(), mrol);
+                }*/
+                actualizarusuario(emailu.getText().toString().trim(), nombreu.getText().toString().trim(), passwordu.getText().toString().trim());
             }
         });
 
@@ -51,17 +90,16 @@ public class Actusuario extends AppCompatActivity {
         listaru.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(),ListadoUsuarios.class));
+                startActivity(new Intent(getApplicationContext(), ListadoUsuarios.class));
             }
         });
-        
+
         buscaru.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!emailu.getText().toString().isEmpty()){
-                    buscarusuario(emailu.getText().toString().trim());    
-                }
-                else{
+                if (!emailu.getText().toString().isEmpty()) {
+                    buscarusuario(emailu.getText().toString().trim());
+                } else {
                     Toast.makeText(getApplicationContext(), "Ingresar Email a buscar", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -71,86 +109,187 @@ public class Actusuario extends AppCompatActivity {
         agregaru.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                agregarusuario();
+                /*String memail = emailu.getText().toString();
+                if (!emailu.getText().toString().isEmpty() && !nombreu.getText().toString().isEmpty() && !passwordu.getText().toString().isEmpty() && (adminu.isChecked() || usuu.isChecked())) {
 
-                String memail = emailu.getText().toString();
-                if (!emailu.getText().toString().isEmpty()&&!nombreu.getText().toString().isEmpty()&&!passwordu.getText().toString().isEmpty()&&(adminu.isChecked()||usuu.isChecked())){
-                    //Instanciar un objeto de la clase SQLiteDatabase para manipular la base de datos.
-                    //Para evitar un error (que no se almacenen dos emails iguales) primero leemos para comparar el dato ingresado.
-                    /*1*/        SQLiteDatabase db = osqlite.getReadableDatabase();//Leer es aplicar SELECT.
-                    //Crear una variable para la instrucción que permite buscar el email. Tabla cursor: Tabla en la memoria, no existe, es temporal.
-                    /*2*/        String sql = "Select email From usuario Where email = '" + emailu.getText().toString()+"'";
-                    //Crear tabla cursor en ram para almacenar los registros que devuelve la instrucción select.
-                    /*3*/        Cursor cusuari = db.rawQuery(sql,null); /*raw quuery significa consulta.*/
-                    //Verificar si la tabla cursor tiene al menos un registro.
-                    /*4*/     if (cusuari.moveToFirst()){ // Si está ubicado en el primer registro de la tabla cursor
-                        //Lo encontró el email.
+                    SQLiteDatabase db = osqlite.getReadableDatabase();
+                    String sql = "Select email From usuario Where email = '" + emailu.getText().toString() + "'";
+                    Cursor cusuari = db.rawQuery(sql, null);
+                    if (cusuari.moveToFirst()) {
                         Toast.makeText(getApplicationContext(), "El Email ya está en uso", Toast.LENGTH_SHORT).show();
-                    }
-                    else{
-                        //Instanciar objeto de la base de datos para guardar el usuario en modo escritura.
+                    } else {
                         SQLiteDatabase db1 = osqlite.getWritableDatabase();
-                        try
-                        {
-                            //Contenedor de datos del usuario
-                            ContentValues contusuario = new ContentValues(); //Se crea una tabla cursor, es diferente porque esta es de escritura.
-                            //Una vez creada la tabla nos ponemos a asignar los campos que deben ser exactamente iguales a el campo de la tabla real.
-                            contusuario.put("email", emailu.getText().toString().trim());//Trim corta los espacios vacios de los string.
-                            contusuario.put("nombre",nombreu.getText().toString().trim());
-                            contusuario.put("clave",passwordu.getText().toString().trim());
-                            if (adminu.isChecked()){
-                                contusuario.put("rol","1");
+                        try {
+                            ContentValues contusuario = new ContentValues();
+                            contusuario.put("email", emailu.getText().toString().trim());
+                            contusuario.put("nombre", nombreu.getText().toString().trim());
+                            contusuario.put("clave", passwordu.getText().toString().trim());
+                            if (adminu.isChecked()) {
+                                contusuario.put("rol", "1");
+                            } else {
+                                contusuario.put("rol", "0");
                             }
-                            else{
-                                contusuario.put("rol","2");
-                            }
-                            db1.insert("usuario",null,contusuario);
+                            db1.insert("usuario", null, contusuario);
                             db1.close();
-                            Toast.makeText(getApplicationContext(),"Usuario agregado correctamente...",Toast.LENGTH_SHORT).show();
-                        }
-                        catch (Exception e)
-                        {
-                            Toast.makeText(getApplicationContext(),"Error: "+e.getMessage(),Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), "Usuario agregado correctamente...", Toast.LENGTH_SHORT).show();
+                        } catch (Exception e) {
+                            Toast.makeText(getApplicationContext(), "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     }
-                }
-                else{
+                } else {
                     Toast.makeText(getApplicationContext(), "Debe ingresar todos los datos", Toast.LENGTH_SHORT).show();
-                }
+                }*/
             }
         });
     }
 
     private void buscarusuario(String emailbuscar) {
-        SQLiteDatabase db = osqlite.getReadableDatabase();
-        String sql = "Select nombre, clave, rol From usuario Where email = '" + emailbuscar +"'";
-        Cursor cusuario = db.rawQuery(sql,null);
-        if (cusuario.moveToFirst()){
-            nombreu.setText(cusuario.getString(0));
-            passwordu.setText(cusuario.getString(1));
-            if (cusuario.getString(2).equals("1")){
-                adminu.setChecked(true);
+        if (!emailbuscar.isEmpty()) {
+            SQLiteDatabase db = osqlite.getReadableDatabase();
+            String sql = "Select nombre, clave, rol From usuario Where email = '" + emailbuscar + "'";
+            Cursor cusuario = db.rawQuery(sql, null);
+            if (cusuario.moveToFirst()) {
+                nombreu.setText(cusuario.getString(0));
+                passwordu.setText(cusuario.getString(1));
+                emailanterior = emailbuscar;
+                if (cusuario.getString(2).equals("1")) {
+                    adminu.setChecked(true);
+                } else {
+                    usuu.setChecked(true);
+                }
+            } else {
+                Toast.makeText(getApplicationContext(), "El usuario con el email " + emailbuscar + " No existe", Toast.LENGTH_SHORT).show();
             }
-            else{
-                usuu.setChecked(true);
+        } else {
+            Toast.makeText(getApplicationContext(), "Ingresar Email a buscar", Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    private void actualizarusuario(String emailact, String nombreact, String passwordact) {
+        String mrol = "0";
+        if (adminu.isChecked()) {
+            mrol = "1";
+        }
+        if (!emailu.getText().toString().isEmpty() && !nombreu.getText().toString().isEmpty() && !passwordu.getText().toString().isEmpty() && (adminu.isChecked() || usuu.isChecked())){
+            emailnuevo = emailu.getText().toString().trim();
+            emailnuevo = emailact.trim();
+            SQLiteDatabase dbact = osqlite.getWritableDatabase();
+            SQLiteDatabase db = osqlite.getReadableDatabase();
+            if (emailnuevo.equals(emailanterior.trim())) {
+                dbact.execSQL("UPDATE Usuario SET nombre = '" + nombreact + "', clave = '" + passwordact + "', rol = '" + mrol + "' WHERE  email = '" + emailanterior + "'");
+                Toast.makeText(getApplicationContext(), "Contacto Actualizado correctamente...", Toast.LENGTH_SHORT).show();
+            } else {
+                String sql = "Select email From Usuario Where email = '" + emailnuevo + "'";
+                Cursor cusuario = db.rawQuery(sql, null);
+                if (cusuario.moveToFirst())
+                {
+                    Toast.makeText(getApplicationContext(), "El email está asignado a otro usuario!! ...", Toast.LENGTH_SHORT).show();
+                } else {
+                    dbact.execSQL("UPDATE Usuario SET email = '" + emailnuevo + "', nombre = '" + nombreact + "', clave = '" + passwordact + "', rol = '" + mrol + "' WHERE  email = '" + emailanterior + "'");
+                    Toast.makeText(getApplicationContext(), "Contacto Actualizado correctamente...", Toast.LENGTH_SHORT).show();
+                }
             }
         }
+        else {
+            Toast.makeText(getApplicationContext(), "Debe ingresar todos los datos", Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_crud, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.agregar:
+                agregarusuario();
+                return true;
+            case R.id.buscar:
+                buscarusuario(emailu.getText().toString().trim());
+                return true;
+            case R.id.actualizar:
+                actualizarusuario(emailu.getText().toString().trim(), nombreu.getText().toString().trim(), passwordu.getText().toString().trim());
+                return true;
+            case R.id.eliminar:
+                eliminarusuario();
+                return true;
+            case R.id.listar:
+                startActivity(new Intent(getApplicationContext(), ListadoUsuarios.class));
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void eliminarusuario() {
+        if (!emailu.getText().toString().isEmpty()) {
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(Actusuario.this);
+            alertDialogBuilder.setMessage("Está seguro de eliminar el usuario: " + nombreu.getText().toString());
+            alertDialogBuilder.setPositiveButton("Sí",
+                    new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface arg0, int arg1) {
+                            SQLiteDatabase obde = osqlite.getWritableDatabase();
+                            obde.execSQL("DELETE FROM usuario WHERE email = '" + emailu.getText().toString() + "'");
+                            Toast.makeText(getApplicationContext(), "Usuario Eliminado correctamente...", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+            alertDialogBuilder.setNegativeButton("No",
+                    new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface arg0, int arg1) {
+
+                        }
+                    });
+
+            AlertDialog alertDialog = alertDialogBuilder.create();
+            alertDialog.show();
+        }
         else{
-            Toast.makeText(getApplicationContext(), "El usuario con el email " + emailbuscar + " No existe", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Debe ingresar el Email del usuario", Toast.LENGTH_SHORT).show();
         }
     }
 
-    private void actualizarusuario(String emailact, String nombreact, String passwordact, String rolact) {
-        SQLiteDatabase db = osqlite.getReadableDatabase();
-        String sql = "Select email, rol From usuario Where email = '" + emailact +"'";
-        Cursor cusuario = db.rawQuery(sql,null);
-        if (!cusuario.moveToFirst()){
-            SQLiteDatabase dbact = osqlite.getWritableDatabase();
-            dbact.execSQL("UPDATE usuario SET email = '" + emailact +"', nombre= '" + nombreact +"', clave =  '" + passwordact +"', rol = '" + rolact +"'");
-            Toast.makeText(getApplicationContext(), "Contacto actualizado correctamente", Toast.LENGTH_SHORT).show();
-        }
-        else{
-            Toast.makeText(getApplicationContext(), "El nuevo Email está asignado", Toast.LENGTH_SHORT).show();
-        }
+    private void agregarusuario() {
+        String memail = emailu.getText().toString();
+        if (!emailu.getText().toString().isEmpty() && !nombreu.getText().toString().isEmpty() && !passwordu.getText().toString().isEmpty() && (adminu.isChecked() || usuu.isChecked())) {
 
+            SQLiteDatabase db = osqlite.getReadableDatabase();
+            String sql = "Select email From usuario Where email = '" + emailu.getText().toString() + "'";
+            Cursor cusuari = db.rawQuery(sql, null);
+            if (cusuari.moveToFirst()) {
+                Toast.makeText(getApplicationContext(), "El Email ya está en uso", Toast.LENGTH_SHORT).show();
+            } else {
+                SQLiteDatabase db1 = osqlite.getWritableDatabase();
+                try {
+                    ContentValues contusuario = new ContentValues();
+                    contusuario.put("email", emailu.getText().toString().trim());
+                    contusuario.put("nombre", nombreu.getText().toString().trim());
+                    contusuario.put("clave", passwordu.getText().toString().trim());
+                    if (adminu.isChecked()) {
+                        contusuario.put("rol", "1");
+                    } else {
+                        contusuario.put("rol", "0");
+                    }
+                    db1.insert("usuario", null, contusuario);
+                    db1.close();
+                    Toast.makeText(getApplicationContext(), "Usuario agregado correctamente...", Toast.LENGTH_SHORT).show();
+                } catch (Exception e) {
+                    Toast.makeText(getApplicationContext(), "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            }
+        } else {
+            Toast.makeText(getApplicationContext(), "Debe ingresar todos los datos", Toast.LENGTH_SHORT).show();
+        }
     }
 }
